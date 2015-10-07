@@ -4,27 +4,30 @@
 
 
 
-template                                                       W. Kumari
+Network Working Group                                          W. Kumari
 Internet-Draft                                                    Google
-Intended status: Informational                          January 30, 2015
-Expires: August 3, 2015
+Intended status: Informational                                 G. Huston
+Expires: April 9, 2016                                             APNIC
+                                                         October 7, 2015
 
 
-                            TODO: Template.
-                       draft-wkumari-template-00
+                Believing NSEC records in the DNS root.
+                    draft-wkumari-dnsop-cheese-shop
 
 Abstract
 
-   This is my standard ID Template.
+   This document cuts down on junk queries to the DNS root and improves
+   performance by answering queries locally from compliant resolvers.
+   It does this by actually believing the NSEC responses.
 
    [ Ed note: Text inside square brackets ([]) is additional background
-   information, answers to freqently asked questions, general musings,
+   information, answers to frequently asked questions, general musings,
    etc.  They will be removed before publication.]
 
    [ This document is being collaborated on in Github at:
-   https://github.com/__URL__. The most recent version of the document,
-   open issues, etc should all be available here.  The authors
-   (gratefully) acept pull requests ]
+   https://github.com/wkumari/draft-wkumari-dnsop-cheese-shop.  The most
+   recent version of the document, open issues, etc should all be
+   available here.  The authors (gratefully) accept pull requests ]
 
 Status of This Memo
 
@@ -41,25 +44,26 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on August 3, 2015.
+   This Internet-Draft will expire on April 9, 2016.
 
 Copyright Notice
 
    Copyright (c) 2015 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
+
+
+
+
+Kumari & Huston           Expires April 9, 2016                 [Page 1]
+
+Internet-Draft          If I've told you once...            October 2015
+
+
    This document is subject to BCP 78 and the IETF Trust's Legal
    Provisions Relating to IETF Documents
    (http://trustee.ietf.org/license-info) in effect on the date of
    publication of this document.  Please review these documents
-
-
-
-Kumari                   Expires August 3, 2015                 [Page 1]
-
-Internet-Draft                  template                    January 2015
-
-
    carefully, as they describe your rights and restrictions with respect
    to this document.  Code Components extracted from this document must
    include Simplified BSD License text as described in Section 4.e of
@@ -68,53 +72,74 @@ Internet-Draft                  template                    January 2015
 
 Table of Contents
 
-   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
-     1.1.  Requirements notation . . . . . . . . . . . . . . . . . .   2
-   2.  Another section.  . . . . . . . . . . . . . . . . . . . . . .   2
-   3.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   2
-   4.  Security Considerations . . . . . . . . . . . . . . . . . . .   2
+   1.  Background  . . . . . . . . . . . . . . . . . . . . . . . . .   2
+   2.  Believing NSEC records. . . . . . . . . . . . . . . . . . . .   2
+     2.1.  Requirements notation . . . . . . . . . . . . . . . . . .   3
+   3.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   3
+   4.  Security Considerations . . . . . . . . . . . . . . . . . . .   3
    5.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   3
    6.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   3
      6.1.  Normative References  . . . . . . . . . . . . . . . . . .   3
      6.2.  Informative References  . . . . . . . . . . . . . . . . .   3
-   Appendix A.  Changes / Author Notes.  . . . . . . . . . . . . . .   3
-   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   3
+   Appendix A.  Changes / Author Notes.  . . . . . . . . . . . . . .   4
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   4
 
-1.  Introduction
+1.  Background
 
-   This document is a template.
+   [ This section may be removed before publication... but I'd prefer
+   not, it provides useful context ]
 
-   Here is a reference to an "external" (non-RFC / draft) thing:
-   ([IANA.AS_Numbers]).  And this is a link to an
-   ID:[I-D.ietf-sidr-iana-objects].
+   The title of this draft (draft-wkumari-dnsop-cheese-shop) comes from
+   a famous Monty Python skit - "The Cheese Shop".  Knowledge of the
+   skit is mandatory background knowledge for this document...
 
-1.1.  Requirements notation
+   Video here: https://www.youtube.com/watch?v=PPN3KTtrnZM
+
+2.  Believing NSEC records.
+
+   This is a simply a refinement of
+   [I-D.fujiwara-dnsop-nsec-aggressiveuse], for a limited use case.
+   Fiull credit to the authors of the aforementioned draft, and this
+   draft does not replace that draft, nor remove the need for the
+   broader consideration of the use of NSEC records as described in
+   [I-D.fujiwara-dnsop-nsec-aggressiveuse].
+
+   The scope of this document is addressed specifically to recursive
+   validating resolvers when querying the root zone.
+
+
+
+
+
+Kumari & Huston           Expires April 9, 2016                 [Page 2]
+
+Internet-Draft          If I've told you once...            October 2015
+
+
+   If the (DNSSEC validated) answer to a query to a root server is an
+   NXDOMAIN then the resolver SHOULD cache the NSEC record provided in
+   the response.  The resolver should NOT send further queries for names
+   within the range of the NSEC record for the lifetime of the cached
+   NSEC TTL.  Instead, the resolver SHOULD answer these queries directly
+   with NXDOMAIN (and NSEC records if so signalled by EDNS).  They
+   SHOULD set the AA bit and AD bits.
+
+2.1.  Requirements notation
 
    The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
    "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
    document are to be interpreted as described in [RFC2119].
 
-2.  Another section.
-
-   Template.
-
 3.  IANA Considerations
 
-   This document contains no IANA considerations.Template: Fill this in!
+   This document contains no IANA considerations.
+
+   [ We MAY want to add something about setting the NSEC TTL
+   appropriately?! ]
 
 4.  Security Considerations
 
    TODO: Fill this out!
-
-
-
-
-
-
-Kumari                   Expires August 3, 2015                 [Page 2]
-
-Internet-Draft                  template                    January 2015
-
 
 5.  Acknowledgements
 
@@ -124,19 +149,28 @@ Internet-Draft                  template                    January 2015
 
 6.1.  Normative References
 
-   [IANA.AS_Numbers]
-              IANA, "Autonomous System (AS) Numbers",
-              <http://www.iana.org/assignments/as-numbers>.
-
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
-              Requirement Levels", BCP 14, RFC 2119, March 1997.
+              Requirement Levels", BCP 14, RFC 2119, DOI 10.17487/
+              RFC2119, March 1997,
+              <http://www.rfc-editor.org/info/rfc2119>.
 
 6.2.  Informative References
 
-   [I-D.ietf-sidr-iana-objects]
-              Manderson, T., Vegoda, L., and S. Kent, "RPKI Objects
-              issued by IANA", draft-ietf-sidr-iana-objects-03 (work in
-              progress), May 2011.
+   [I-D.fujiwara-dnsop-nsec-aggressiveuse]
+              Fujiwara, K. and A. Kato, "Aggressive use of NSEC/NSEC3",
+              draft-fujiwara-dnsop-nsec-aggressiveuse-01 (work in
+              progress), July 2015.
+
+
+
+
+
+
+
+Kumari & Huston           Expires April 9, 2016                 [Page 3]
+
+Internet-Draft          If I've told you once...            October 2015
+
 
 Appendix A.  Changes / Author Notes.
 
@@ -146,7 +180,7 @@ Appendix A.  Changes / Author Notes.
 
    o  Nothing changed in the template!
 
-Author's Address
+Authors' Addresses
 
    Warren Kumari
    Google
@@ -157,6 +191,13 @@ Author's Address
    Email: warren@kumari.net
 
 
+   Geoff Huston
+   APNIC
+   6 Cordelia St
+   South Brisbane QLD  4001
+   AUS
+
+   Email: gih@apnic.net
 
 
 
@@ -167,5 +208,20 @@ Author's Address
 
 
 
-Kumari                   Expires August 3, 2015                 [Page 3]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Kumari & Huston           Expires April 9, 2016                 [Page 4]
 ```

@@ -3,7 +3,8 @@
 <!ENTITY rfc2119 PUBLIC "" ".//reference.RFC.2119.xml">
 ]>
 <!-- WK: Set category, IPR, docName -->
-<rfc category="info" docName="draft-wkumari-dnsop-cheese-shop" ipr="trust200902">
+<rfc category="info" docName="draft-wkumari-dnsop-cheese-shop"
+     ipr="trust200902">
   <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
   <?rfc toc="yes" ?>
@@ -21,7 +22,8 @@
   <front>
     <!-- WK: Set long title. -->
 
-    <title abbrev="draft-wkumari-dnsop-cheese-shop">TODO: Template.</title>
+    <title abbrev="If I've told you once...">Believing NSEC records in the DNS
+    root.</title>
 
     <author fullname="Warren Kumari" initials="W." surname="Kumari">
       <organization>Google</organization>
@@ -41,31 +43,72 @@
       </address>
     </author>
 
-    <date day="30" month="January" year="2015"/>
+    <author fullname="Geoff Huston" initials="G." surname="Huston">
+      <organization>APNIC</organization>
+
+      <address>
+        <postal>
+          <street>6 Cordelia St</street>
+
+          <city>South Brisbane QLD</city>
+
+          <code>4001</code>
+
+          <country>AUS</country>
+        </postal>
+
+        <email>gih@apnic.net</email>
+      </address>
+    </author>
+
+    <date day="7" month="October" year="2015"/>
 
     <abstract>
-      <t>This is my standard ID Template.</t>
+      <t>This document cuts down on junk queries to the DNS root and improves
+      performance by answering queries locally from compliant resolvers. It
+      does this by actually believing the NSEC responses.</t>
 
       <t>[ Ed note: Text inside square brackets ([]) is additional background
-      information, answers to freqently asked questions, general musings, etc.
-      They will be removed before publication.]</t>
+      information, answers to frequently asked questions, general musings,
+      etc. They will be removed before publication.]</t>
 
       <t>[ This document is being collaborated on in Github at:
-      https://github.com/wkumari/draft-wkumari-dnsop-cheese-shop. The most recent version of
-      the document, open issues, etc should all be available here. The authors
-      (gratefully) acept pull requests ]</t>
+      https://github.com/wkumari/draft-wkumari-dnsop-cheese-shop. The most
+      recent version of the document, open issues, etc should all be available
+      here. The authors (gratefully) accept pull requests ]</t>
     </abstract>
   </front>
 
   <middle>
-    <section title="Introduction">
-      <t>This document is a template.</t>
+    <section title="Background">
+      <t>[ This section may be removed before publication... but I'd prefer
+      not, it provides useful context ]</t>
 
-      <t/>
+      <t>The title of this draft (draft-wkumari-dnsop-cheese-shop) comes from
+      a famous Monty Python skit - "The Cheese Shop". Knowledge of the skit is
+      mandatory background knowledge for this document...</t>
 
-      <t>Here is a reference to an "external" (non-RFC / draft) thing: (<xref
-      target="IANA.AS_Numbers"/>). And this is a link to an ID:<xref
-      target="I-D.ietf-sidr-iana-objects"/>.</t>
+      <t>Video here: https://www.youtube.com/watch?v=PPN3KTtrnZM</t>
+    </section>
+
+    <section title="Believing NSEC records.">
+      <t>This is a simply a refinement of <xref
+      target="I-D.fujiwara-dnsop-nsec-aggressiveuse"/>, for a limited use
+      case. Fiull credit to the authors of the aforementioned draft, and this
+      draft does not replace that draft, nor remove the need for the broader
+      consideration of the use of NSEC records as described in <xref
+      target="I-D.fujiwara-dnsop-nsec-aggressiveuse"/>.</t>
+
+      <t>The scope of this document is addressed specifically to recursive
+      validating resolvers when querying the root zone. </t>
+
+      <t>If the (DNSSEC validated) answer to a query to a root server is an
+      NXDOMAIN then the resolver SHOULD cache the NSEC record provided in the
+      response. The resolver should NOT send further queries for names within
+      the range of the NSEC record for the lifetime of the cached NSEC TTL.
+      Instead, the resolver SHOULD answer these queries directly with NXDOMAIN
+      (and NSEC records if so signalled by EDNS). They SHOULD set the AA bit
+      and AD bits.</t>
 
       <section title="Requirements notation">
         <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
@@ -75,15 +118,11 @@
       </section>
     </section>
 
-    <section title="Another section.">
-      <t>Template.</t>
-
-      <t/>
-    </section>
-
     <section title="IANA Considerations">
-      <t>This document contains no IANA considerations.Template: Fill this
-      in!</t>
+      <t>This document contains no IANA considerations.</t>
+
+      <t>[ We MAY want to add something about setting the NSEC TTL
+      appropriately?! ] </t>
     </section>
 
     <section anchor="security" title="Security Considerations">
@@ -98,24 +137,10 @@
   <back>
     <references title="Normative References">
       <?rfc include='reference.RFC.2119'?>
-
-      <reference anchor="IANA.AS_Numbers"
-                 target="http://www.iana.org/assignments/as-numbers">
-        <front>
-          <title abbrev="Autonomous System (AS) Numbers">Autonomous System
-          (AS) Numbers</title>
-
-          <author>
-            <organization>IANA</organization>
-          </author>
-
-          <date/>
-        </front>
-      </reference>
     </references>
 
     <references title="Informative References">
-      <?rfc include='reference.I-D.draft-ietf-sidr-iana-objects-03.xml'?>
+      <?rfc include='reference.I-D.fujiwara-dnsop-nsec-aggressiveuse.xml'?>
     </references>
 
     <section title="Changes / Author Notes.">
