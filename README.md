@@ -7,8 +7,8 @@
 Network Working Group                                          W. Kumari
 Internet-Draft                                                    Google
 Intended status: Informational                                 G. Huston
-Expires: April 9, 2016                                             APNIC
-                                                         October 7, 2015
+Expires: April 10, 2016                                            APNIC
+                                                         October 8, 2015
 
 
                 Believing NSEC records in the DNS root.
@@ -44,7 +44,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on April 9, 2016.
+   This Internet-Draft will expire on April 10, 2016.
 
 Copyright Notice
 
@@ -55,7 +55,7 @@ Copyright Notice
 
 
 
-Kumari & Huston           Expires April 9, 2016                 [Page 1]
+Kumari & Huston          Expires April 10, 2016                 [Page 1]
 
 Internet-Draft          If I've told you once...            October 2015
 
@@ -111,7 +111,7 @@ Table of Contents
 
 
 
-Kumari & Huston           Expires April 9, 2016                 [Page 2]
+Kumari & Huston          Expires April 10, 2016                 [Page 2]
 
 Internet-Draft          If I've told you once...            October 2015
 
@@ -167,7 +167,7 @@ Internet-Draft          If I've told you once...            October 2015
 
 
 
-Kumari & Huston           Expires April 9, 2016                 [Page 3]
+Kumari & Huston          Expires April 10, 2016                 [Page 3]
 
 Internet-Draft          If I've told you once...            October 2015
 
@@ -223,5 +223,5 @@ Authors' Addresses
 
 
 
-Kumari & Huston           Expires April 9, 2016                 [Page 4]
+Kumari & Huston          Expires April 10, 2016                 [Page 4]
 ```
