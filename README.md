@@ -7,18 +7,19 @@
 Network Working Group                                          W. Kumari
 Internet-Draft                                                    Google
 Intended status: Informational                                 G. Huston
-Expires: April 10, 2016                                            APNIC
-                                                         October 8, 2015
+Expires: August 27, 2016                                           APNIC
+                                                       February 24, 2016
 
 
                 Believing NSEC records in the DNS root.
-                    draft-wkumari-dnsop-cheese-shop
+                   draft-wkumari-dnsop-cheese-shop-01
 
 Abstract
 
-   This document cuts down on junk queries to the DNS root and improves
-   performance by answering queries locally from compliant resolvers.
-   It does this by actually believing the NSEC responses.
+   This document describes a method to generate negative answers from
+   NSEC records for the special case of the DNS root.  This improves
+   performance; the resolver can answer immediatly, and does not need to
+   query the root.  It also cuts down on the so-called "junk" queries.
 
    [ Ed note: Text inside square brackets ([]) is additional background
    information, answers to frequently asked questions, general musings,
@@ -44,20 +45,19 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on April 10, 2016.
+   This Internet-Draft will expire on August 27, 2016.
 
 Copyright Notice
 
-   Copyright (c) 2015 IETF Trust and the persons identified as the
+   Copyright (c) 2016 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
 
 
 
-
-Kumari & Huston          Expires April 10, 2016                 [Page 1]
+Kumari & Huston          Expires August 27, 2016                [Page 1]
 
-Internet-Draft          If I've told you once...            October 2015
+Internet-Draft          If I've told you once...           February 2016
 
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -73,48 +73,65 @@ Internet-Draft          If I've told you once...            October 2015
 Table of Contents
 
    1.  Background  . . . . . . . . . . . . . . . . . . . . . . . . .   2
-   2.  Believing NSEC records. . . . . . . . . . . . . . . . . . . .   2
+   2.  Believing NSEC records. . . . . . . . . . . . . . . . . . . .   3
      2.1.  Requirements notation . . . . . . . . . . . . . . . . . .   3
-   3.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   3
-   4.  Security Considerations . . . . . . . . . . . . . . . . . . .   3
-   5.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   3
-   6.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   3
-     6.1.  Normative References  . . . . . . . . . . . . . . . . . .   3
-     6.2.  Informative References  . . . . . . . . . . . . . . . . .   3
-   Appendix A.  Changes / Author Notes.  . . . . . . . . . . . . . .   4
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   4
+   3.  Generating negatives responses from NSEC  . . . . . . . . . .   3
+   4.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   4
+   5.  Security Considerations . . . . . . . . . . . . . . . . . . .   4
+   6.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   4
+   7.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   4
+     7.1.  Normative References  . . . . . . . . . . . . . . . . . .   4
+     7.2.  Informative References  . . . . . . . . . . . . . . . . .   4
+   Appendix A.  Changes / Author Notes.  . . . . . . . . . . . . . .   5
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   5
 
 1.  Background
 
    [ This section may be removed before publication... but I'd prefer
    not, it provides useful context ]
 
-   The title of this draft (draft-wkumari-dnsop-cheese-shop) comes from
-   a famous Monty Python skit - "The Cheese Shop".  Knowledge of the
-   skit is mandatory background knowledge for this document...
+   If a DNSSEC validating name server queries the root for a name which
+   does not exist, it gets back an NXDOMAIN response and an NSEC record,
+   which "proves" that the name does not exist.  NSEC proves this by
+   providing names (and signatures) for the names which do exist on
+   either side of the queried name.  For example, if a nameserver
+   queries for .belkin, it will get back an NXDOMAIN, and an NSEC record
+   showing that nothing exists between (currently) .beer and .bentley
+   [Ed note: There *probably* should be something between a beer and a
+   bentley. :-P ].  This means that, if the nameserver subsequently
+   (during the TTL of the NSEC record) gets a query for .beeswax
+   (alphabetically between beer and bentley) it should not attempt to
+   resolve this - it has already been given proof that the name does not
+   exist.
 
-   Video here: https://www.youtube.com/watch?v=PPN3KTtrnZM
+   The title of this draft comes from a famous Monty Python skit - "The
+   Cheese Shop".  There are some useful parallels between this problem
+   and the skit - watching the skit is encouraged to understand the
+   problem - https://www.youtube.com/watch?v=cWDdd5KKhts
+
+
+
+Kumari & Huston          Expires August 27, 2016                [Page 2]
+
+Internet-Draft          If I've told you once...           February 2016
+
 
 2.  Believing NSEC records.
 
    This is a simply a refinement of
-   [I-D.fujiwara-dnsop-nsec-aggressiveuse], for a limited use case.
-   Fiull credit to the authors of the aforementioned draft, and this
-   draft does not replace that draft, nor remove the need for the
+   [I-D.fujiwara-dnsop-nsec-aggressiveuse], for a limited use case (the
+   root).  Full credit to the authors of the aforementioned draft, and
+   this draft does not replace that draft, nor remove the need for the
    broader consideration of the use of NSEC records as described in
    [I-D.fujiwara-dnsop-nsec-aggressiveuse].
 
-   The scope of this document is addressed specifically to recursive
-   validating resolvers when querying the root zone.
-
-
-
-
-
-Kumari & Huston          Expires April 10, 2016                 [Page 2]
-
-Internet-Draft          If I've told you once...            October 2015
-
+   The scope of this document is limited to the special case of
+   recursive validating resolvers querying the root zone.  This is
+   because the root zone has some well known properties which make it a
+   special case - we know it is DNSSEC signed, and uses NSEC, the
+   majority of the queries are "junk" queries, the rate of change is
+   relatively slow, and there are no odd corner cases such as wildcards.
+   See Section 3 for more discussion.
 
    If the (DNSSEC validated) answer to a query to a root server is an
    NXDOMAIN then the resolver SHOULD cache the NSEC record provided in
@@ -130,47 +147,91 @@ Internet-Draft          If I've told you once...            October 2015
    "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
    document are to be interpreted as described in [RFC2119].
 
-3.  IANA Considerations
+3.  Generating negatives responses from NSEC
+
+   [ This section is mainly for discussion, and is more informal.  It
+   should be deleted before publication. ]
+
+   Section 4.5 of [RFC4035] says:
+
+   "In theory, a resolver could use wildcards or NSEC RRs to generate
+   positive and negative responses (respectively) until the TTL or
+   signatures on the records in question expire.  However, it seems
+   prudent for resolvers to avoid blocking new authoritative data or
+   synthesizing new data on their own.  Resolvers that follow this
+   recommendation will have a more consistent view of the namespace."
+
+   and "The reason for these recommendations is that, between the
+   initial query and the expiration of the data from the cache, the
+
+
+
+
+Kumari & Huston          Expires August 27, 2016                [Page 3]
+
+Internet-Draft          If I've told you once...           February 2016
+
+
+   authoritative data might have been changed (for example, via dynamic
+   update)."
+
+   So, if a resolver generates negative answers from an NSEC record, it
+   will not send any queries for names within that NSEC range (for the
+   TTL).  If a new name is added to the zone during this interval the
+   resolver will not know this.
+
+   For the limited use case of this document (the DNS root) we believe
+   that this is an acceptable trade off - the (current) TTL of the
+   "negative cache" (in the SOA) is the same as the NSEC TTL (1 day).
+   This means that, for a new TLD to begin resolving everywhere will
+   require a minimum of a day - and this is true whether or not this is
+   implemented (if someone had queried for the exact name, there would
+   be a negatively cached answer, this simply expands the range of
+   negative caches).
+
+4.  IANA Considerations
 
    This document contains no IANA considerations.
 
    [ We MAY want to add something about setting the NSEC TTL
    appropriately?! ]
 
-4.  Security Considerations
+5.  Security Considerations
 
    TODO: Fill this out!
 
-5.  Acknowledgements
+6.  Acknowledgements
 
-   The authors wish to thank some folk.
+   The authors wish to thank some folk, including Stephane Bortzmeyer,
+   Bob Harold, Paul Vixie.
 
-6.  References
+7.  References
 
-6.1.  Normative References
+7.1.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119, DOI 10.17487/
               RFC2119, March 1997,
               <http://www.rfc-editor.org/info/rfc2119>.
 
-6.2.  Informative References
+7.2.  Informative References
 
    [I-D.fujiwara-dnsop-nsec-aggressiveuse]
               Fujiwara, K. and A. Kato, "Aggressive use of NSEC/NSEC3",
-              draft-fujiwara-dnsop-nsec-aggressiveuse-01 (work in
-              progress), July 2015.
+              draft-fujiwara-dnsop-nsec-aggressiveuse-02 (work in
+              progress), October 2015.
 
 
 
-
-
-
-
-Kumari & Huston          Expires April 10, 2016                 [Page 3]
+Kumari & Huston          Expires August 27, 2016                [Page 4]
 
-Internet-Draft          If I've told you once...            October 2015
+Internet-Draft          If I've told you once...           February 2016
 
+
+   [RFC4035]  Arends, R., Austein, R., Larson, M., Massey, D., and S.
+              Rose, "Protocol Modifications for the DNS Security
+              Extensions", RFC 4035, DOI 10.17487/RFC4035, March 2005,
+              <http://www.rfc-editor.org/info/rfc4035>.
 
 Appendix A.  Changes / Author Notes.
 
@@ -178,7 +239,8 @@ Appendix A.  Changes / Author Notes.
 
    From -00 to -01.
 
-   o  Nothing changed in the template!
+   o  Fairly significant rewrite - no substantive changes, only
+      additional information, explaination and readability.
 
 Authors' Addresses
 
@@ -217,11 +279,5 @@ Authors' Addresses
 
 
 
-
-
-
-
-
-
-Kumari & Huston          Expires April 10, 2016                 [Page 4]
+Kumari & Huston          Expires August 27, 2016                [Page 5]
 ```
