@@ -185,7 +185,7 @@
         outdated information for a period of time for subsequent queries for the
         name name.</t>
   
-  `     <t>This draft extends the scope of this vulnerability to include
+       <t>This draft extends the scope of this vulnerability to include
         queries for all names that fall within the NSEC-defined range.
         </t>
     </section>

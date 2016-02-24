@@ -80,8 +80,8 @@ Table of Contents
    5.  Security Considerations . . . . . . . . . . . . . . . . . . .   4
    6.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   4
    7.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   4
-     7.1.  Normative References  . . . . . . . . . . . . . . . . . .   4
-     7.2.  Informative References  . . . . . . . . . . . . . . . . .   4
+     7.1.  Normative References  . . . . . . . . . . . . . . . . . .   5
+     7.2.  Informative References  . . . . . . . . . . . . . . . . .   5
    Appendix A.  Changes / Author Notes.  . . . . . . . . . . . . . .   5
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   5
 
@@ -90,8 +90,9 @@ Table of Contents
    [ This section may be removed before publication... but I'd prefer
    not, it provides useful context ]
 
-   If a DNSSEC validating name server queries the root for a name which
-   does not exist, it gets back an NXDOMAIN response and an NSEC record,
+   If a DNS resolver queries a root zone authoritative name server with
+   the EDNS0 DNSSEC OK option set, for a name that does not exist in the
+   root zone, it gets back an NXDOMAIN response and an NSEC record,
    which "proves" that the name does not exist.  NSEC proves this by
    providing names (and signatures) for the names which do exist on
    either side of the queried name.  For example, if a nameserver
@@ -100,14 +101,13 @@ Table of Contents
    [Ed note: There *probably* should be something between a beer and a
    bentley. :-P ].  This means that, if the nameserver subsequently
    (during the TTL of the NSEC record) gets a query for .beeswax
-   (alphabetically between beer and bentley) it should not attempt to
+   (alphabetically between beer and bentley) it need not attempt to
    resolve this - it has already been given proof that the name does not
    exist.
 
    The title of this draft comes from a famous Monty Python skit - "The
    Cheese Shop".  There are some useful parallels between this problem
-   and the skit - watching the skit is encouraged to understand the
-   problem - https://www.youtube.com/watch?v=cWDdd5KKhts
+
 
 
 
@@ -115,6 +115,9 @@ Kumari & Huston          Expires August 27, 2016                [Page 2]
 
 Internet-Draft          If I've told you once...           February 2016
 
+
+   and the skit - watching the skit is encouraged to understand the
+   problem - https://www.youtube.com/watch?v=cWDdd5KKhts
 
 2.  Believing NSEC records.
 
@@ -126,16 +129,16 @@ Internet-Draft          If I've told you once...           February 2016
    [I-D.fujiwara-dnsop-nsec-aggressiveuse].
 
    The scope of this document is limited to the special case of
-   recursive validating resolvers querying the root zone.  This is
-   because the root zone has some well known properties which make it a
-   special case - we know it is DNSSEC signed, and uses NSEC, the
+   recursive DNSSEC validating resolvers querying the root zone.  This
+   is because the root zone has some well known properties which make it
+   a special case - we know it is DNSSEC signed, and uses NSEC, the
    majority of the queries are "junk" queries, the rate of change is
    relatively slow, and there are no odd corner cases such as wildcards.
    See Section 3 for more discussion.
 
    If the (DNSSEC validated) answer to a query to a root server is an
    NXDOMAIN then the resolver SHOULD cache the NSEC record provided in
-   the response.  The resolver should NOT send further queries for names
+   the response.  The resolver SHOULD NOT send further queries for names
    within the range of the NSEC record for the lifetime of the cached
    NSEC TTL.  Instead, the resolver SHOULD answer these queries directly
    with NXDOMAIN (and NSEC records if so signalled by EDNS).  They
@@ -161,9 +164,6 @@ Internet-Draft          If I've told you once...           February 2016
    synthesizing new data on their own.  Resolvers that follow this
    recommendation will have a more consistent view of the namespace."
 
-   and "The reason for these recommendations is that, between the
-   initial query and the expiration of the data from the cache, the
-
 
 
 
@@ -172,6 +172,8 @@ Kumari & Huston          Expires August 27, 2016                [Page 3]
 Internet-Draft          If I've told you once...           February 2016
 
 
+   and "The reason for these recommendations is that, between the
+   initial query and the expiration of the data from the cache, the
    authoritative data might have been changed (for example, via dynamic
    update)."
 
@@ -198,7 +200,14 @@ Internet-Draft          If I've told you once...           February 2016
 
 5.  Security Considerations
 
-   TODO: Fill this out!
+   The impact of resolver caching is that the resolver will not re-query
+   an name server for a cached response until the TTL of the cached
+   response expires.  This may lead to cases where the resolver responds
+   with outdated information for a period of time for subsequent queries
+   for the name name.
+
+   This draft extends the scope of this vulnerability to include queries
+   for all names that fall within the NSEC-defined range.
 
 6.  Acknowledgements
 
@@ -206,6 +215,18 @@ Internet-Draft          If I've told you once...           February 2016
    Bob Harold, Paul Vixie.
 
 7.  References
+
+
+
+
+
+
+
+
+Kumari & Huston          Expires August 27, 2016                [Page 4]
+
+Internet-Draft          If I've told you once...           February 2016
+
 
 7.1.  Normative References
 
@@ -220,13 +241,6 @@ Internet-Draft          If I've told you once...           February 2016
               Fujiwara, K. and A. Kato, "Aggressive use of NSEC/NSEC3",
               draft-fujiwara-dnsop-nsec-aggressiveuse-02 (work in
               progress), October 2015.
-
-
-
-Kumari & Huston          Expires August 27, 2016                [Page 4]
-
-Internet-Draft          If I've told you once...           February 2016
-
 
    [RFC4035]  Arends, R., Austein, R., Larson, M., Massey, D., and S.
               Rose, "Protocol Modifications for the DNS Security
@@ -260,20 +274,6 @@ Authors' Addresses
    AUS
 
    Email: gih@apnic.net
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
