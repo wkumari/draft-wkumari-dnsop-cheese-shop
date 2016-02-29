@@ -17,7 +17,7 @@ Expires: August 27, 2016                                           APNIC
 Abstract
 
    This document describes a method to generate negative answers from
-   NSEC records for the special case of the DNS root.  This improves
+   NSEC records for the special case of the DNS root.  This ican mprove
    performance; the resolver can answer immediatly, and does not need to
    query the root.  It also cuts down on the so-called "junk" queries.
 
@@ -87,27 +87,27 @@ Table of Contents
 
 1.  Background
 
-   [ This section may be removed before publication... but I'd prefer
-   not, it provides useful context ]
-
    If a DNS resolver queries a root zone authoritative name server with
-   the EDNS0 DNSSEC OK option set, for a name that does not exist in the
+   the EDNS0 DNSSEC OK bit set, for a name that does not exist in the
    root zone, it gets back an NXDOMAIN response and an NSEC record,
    which "proves" that the name does not exist.  NSEC proves this by
    providing names (and signatures) for the names which do exist on
-   either side of the queried name.  For example, if a nameserver
+   either side of the queried name.  For example, if a DNS resolver
    queries for .belkin, it will get back an NXDOMAIN, and an NSEC record
    showing that nothing exists between (currently) .beer and .bentley
    [Ed note: There *probably* should be something between a beer and a
-   bentley. :-P ].  This means that, if the nameserver subsequently
+   bentley. :-P ].  This means that, if the resolver subsequently
    (during the TTL of the NSEC record) gets a query for .beeswax
    (alphabetically between beer and bentley) it need not attempt to
    resolve this - it has already been given proof that the name does not
    exist.
 
-   The title of this draft comes from a famous Monty Python skit - "The
-   Cheese Shop".  There are some useful parallels between this problem
-
+   [ RFC Editor: Please remove before publication: The filename comes
+   from a Monty Python skit - "The Cheese Shop"
+   (https://www.youtube.com/watch?v=cWDdd5KKhts) . There are some useful
+   parallels between this problem and the skit -- a customer (resolver)
+   repeatedly polls the owner (authorative) for various specific
+   cheeses.  Both sides could have avoided much wasted time and effort
 
 
 
@@ -116,8 +116,8 @@ Kumari & Huston          Expires August 27, 2016                [Page 2]
 Internet-Draft          If I've told you once...           February 2016
 
 
-   and the skit - watching the skit is encouraged to understand the
-   problem - https://www.youtube.com/watch?v=cWDdd5KKhts
+   if the customer had asked for one specific cheese, and the owner had
+   stated that they have no cheese. ]
 
 2.  Believing NSEC records.
 
@@ -145,7 +145,7 @@ Internet-Draft          If I've told you once...           February 2016
    within the range of the NSEC record for the lifetime of the cached
    NSEC TTL.  Instead, the resolver SHOULD answer these queries directly
    with NXDOMAIN (and NSEC records if so signalled by EDNS).  They
-   SHOULD set the AA bit and AD bits.
+   SHOULD set the AD bit.
 
 2.1.  Requirements notation
 
@@ -215,7 +215,7 @@ Internet-Draft          If I've told you once...           February 2016
 6.  Acknowledgements
 
    The authors wish to thank some folk, including Stephane Bortzmeyer,
-   Bob Harold, Shane Kerr, Paul Vixie.
+   Bob Harold, Shane Kerr, Paul Vixie, Tatuya Jinmei.
 
 
 
@@ -258,7 +258,11 @@ Appendix A.  Changes / Author Notes.
    o  Incorporated Shane Kerr's "If the root zone is not DNSSEC signed
       with NSEC records then the Cheese Shop is closed and this document
       does not apply.  Resolvers MUST continue to work in such an
-      environment.""
+      environment."
+
+   o  Incorporated some dits from Jinmei.
+
+   o
 
    From -00 to -01:
 
@@ -267,13 +271,9 @@ Appendix A.  Changes / Author Notes.
 
 Authors' Addresses
 
-   Warren Kumari
-   Google
-   1600 Amphitheatre Parkway
-   Mountain View, CA  94043
-   US
 
-   Email: warren@kumari.net
+
+
 
 
 
@@ -284,6 +284,15 @@ Kumari & Huston          Expires August 27, 2016                [Page 5]
 Internet-Draft          If I've told you once...           February 2016
 
 
+   Warren Kumari
+   Google
+   1600 Amphitheatre Parkway
+   Mountain View, CA  94043
+   US
+
+   Email: warren@kumari.net
+
+
    Geoff Huston
    APNIC
    6 Cordelia St
@@ -291,15 +300,6 @@ Internet-Draft          If I've told you once...           February 2016
    AUS
 
    Email: gih@apnic.net
-
-
-
-
-
-
-
-
-
 
 
 
