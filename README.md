@@ -12,7 +12,7 @@ Expires: August 27, 2016                                           APNIC
 
 
                 Believing NSEC records in the DNS root.
-                   draft-wkumari-dnsop-cheese-shop-01
+                   draft-wkumari-dnsop-cheese-shop-02
 
 Abstract
 
@@ -79,7 +79,7 @@ Table of Contents
    4.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   4
    5.  Security Considerations . . . . . . . . . . . . . . . . . . .   4
    6.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   4
-   7.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   4
+   7.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   5
      7.1.  Normative References  . . . . . . . . . . . . . . . . . .   5
      7.2.  Informative References  . . . . . . . . . . . . . . . . .   5
    Appendix A.  Changes / Author Notes.  . . . . . . . . . . . . . .   5
@@ -129,12 +129,15 @@ Internet-Draft          If I've told you once...           February 2016
    [I-D.fujiwara-dnsop-nsec-aggressiveuse].
 
    The scope of this document is limited to the special case of
-   recursive DNSSEC validating resolvers querying the root zone.  This
-   is because the root zone has some well known properties which make it
-   a special case - we know it is DNSSEC signed, and uses NSEC, the
-   majority of the queries are "junk" queries, the rate of change is
-   relatively slow, and there are no odd corner cases such as wildcards.
-   See Section 3 for more discussion.
+   recursive DNSSEC validating resolvers querying the global DNS root
+   zone.  This is because the DNS root zone has some well known
+   properties which make it a special case - we know it is DNSSEC
+   signed, and uses NSEC, the majority of the queries are "junk"
+   queries, the rate of change is relatively slow, and there are no odd
+   corner cases such as wildcards.  See Section 3 for more discussion.
+   If the root zone is not DNSSEC signed with NSEC records then the
+   Cheese Shop is closed and this document does not apply.  Resolvers
+   MUST continue to work in such an environment.
 
    If the (DNSSEC validated) answer to a query to a root server is an
    NXDOMAIN then the resolver SHOULD cache the NSEC record provided in
@@ -161,9 +164,6 @@ Internet-Draft          If I've told you once...           February 2016
    positive and negative responses (respectively) until the TTL or
    signatures on the records in question expire.  However, it seems
    prudent for resolvers to avoid blocking new authoritative data or
-   synthesizing new data on their own.  Resolvers that follow this
-   recommendation will have a more consistent view of the namespace."
-
 
 
 
@@ -171,6 +171,9 @@ Kumari & Huston          Expires August 27, 2016                [Page 3]
 
 Internet-Draft          If I've told you once...           February 2016
 
+
+   synthesizing new data on their own.  Resolvers that follow this
+   recommendation will have a more consistent view of the namespace."
 
    and "The reason for these recommendations is that, between the
    initial query and the expiration of the data from the cache, the
@@ -212,10 +215,7 @@ Internet-Draft          If I've told you once...           February 2016
 6.  Acknowledgements
 
    The authors wish to thank some folk, including Stephane Bortzmeyer,
-   Bob Harold, Paul Vixie.
-
-7.  References
-
+   Bob Harold, Shane Kerr, Paul Vixie.
 
 
 
@@ -227,6 +227,8 @@ Kumari & Huston          Expires August 27, 2016                [Page 4]
 
 Internet-Draft          If I've told you once...           February 2016
 
+
+7.  References
 
 7.1.  Normative References
 
@@ -251,7 +253,14 @@ Appendix A.  Changes / Author Notes.
 
    [RFC Editor: Please remove this section before publication ]
 
-   From -00 to -01.
+   From -01 to -02:
+
+   o  Incorporated Shane Kerr's "If the root zone is not DNSSEC signed
+      with NSEC records then the Cheese Shop is closed and this document
+      does not apply.  Resolvers MUST continue to work in such an
+      environment.""
+
+   From -00 to -01:
 
    o  Fairly significant rewrite - no substantive changes, only
       additional information, explaination and readability.
@@ -267,6 +276,14 @@ Authors' Addresses
    Email: warren@kumari.net
 
 
+
+
+
+Kumari & Huston          Expires August 27, 2016                [Page 5]
+
+Internet-Draft          If I've told you once...           February 2016
+
+
    Geoff Huston
    APNIC
    6 Cordelia St
@@ -279,5 +296,44 @@ Authors' Addresses
 
 
 
-Kumari & Huston          Expires August 27, 2016                [Page 5]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Kumari & Huston          Expires August 27, 2016                [Page 6]
 ```

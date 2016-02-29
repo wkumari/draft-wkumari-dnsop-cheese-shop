@@ -3,7 +3,7 @@
 <!ENTITY rfc2119 PUBLIC "" ".//reference.RFC.2119.xml">
 ]>
 <!-- WK: Set category, IPR, docName -->
-<rfc category="info" docName="draft-wkumari-dnsop-cheese-shop-01"
+<rfc category="info" docName="draft-wkumari-dnsop-cheese-shop-02"
      ipr="trust200902">
   <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
@@ -67,7 +67,7 @@
       <t>This document describes a method to generate negative answers from
       NSEC records for the special case of the DNS root. This improves
       performance; the resolver can answer immediatly, and does not need to
-      query the root. It also cuts down on the so-called "junk" queries. </t>
+      query the root. It also cuts down on the so-called "junk" queries.</t>
 
       <t>[ Ed note: Text inside square brackets ([]) is additional background
       information, answers to frequently asked questions, general musings,
@@ -85,21 +85,19 @@
       <t>[ This section may be removed before publication... but I'd prefer
       not, it provides useful context ]</t>
 
-      <t>If a DNS resolver queries a root zone authoritative name
-        server with the EDNS0 DNSSEC OK option set, for a name that
-        does not exist in the root zone, it gets back an NXDOMAIN
-        response and an NSEC record, which "proves" that the name does
-        not exist. NSEC proves this by providing names (and signatures)
-        for the names which do exist on either side of the queried
-        name. For example, if a nameserver queries for .belkin, it will
-        get back an NXDOMAIN, and an NSEC record showing that nothing
-        exists between (currently) .beer and .bentley [Ed note: There
-        *probably* should be something between a beer and a bentley. :-P
-        ]. This means that, if the nameserver subsequently (during the
-        TTL of the NSEC record) gets a query for .beeswax
-        (alphabetically between beer and bentley) it need not attempt
-        to resolve this - it has already been given proof that the name
-        does not exist. </t>
+      <t>If a DNS resolver queries a root zone authoritative name server with
+      the EDNS0 DNSSEC OK option set, for a name that does not exist in the
+      root zone, it gets back an NXDOMAIN response and an NSEC record, which
+      "proves" that the name does not exist. NSEC proves this by providing
+      names (and signatures) for the names which do exist on either side of
+      the queried name. For example, if a nameserver queries for .belkin, it
+      will get back an NXDOMAIN, and an NSEC record showing that nothing
+      exists between (currently) .beer and .bentley [Ed note: There *probably*
+      should be something between a beer and a bentley. :-P ]. This means
+      that, if the nameserver subsequently (during the TTL of the NSEC record)
+      gets a query for .beeswax (alphabetically between beer and bentley) it
+      need not attempt to resolve this - it has already been given proof that
+      the name does not exist.</t>
 
       <t>The title of this draft comes from a famous Monty Python skit - "The
       Cheese Shop". There are some useful parallels between this problem and
@@ -115,13 +113,15 @@
       broader consideration of the use of NSEC records as described in <xref
       target="I-D.fujiwara-dnsop-nsec-aggressiveuse"/>.</t>
 
-      <t>The scope of this document is limited to the special case of
-      recursive DNSSEC validating resolvers querying the root zone. This is because
-      the root zone has some well known properties which make it a special
-      case - we know it is DNSSEC signed, and uses NSEC, the majority of the
-      queries are "junk" queries, the rate of change is relatively slow, and
-      there are no odd corner cases such as wildcards. See Section 3 for more
-      discussion.</t>
+      <t> The scope of this document is limited to the special case of
+      recursive DNSSEC validating resolvers querying the global DNS root zone.
+      This is because the DNS root zone has some well known properties which
+      make it a special case - we know it is DNSSEC signed, and uses NSEC, the
+      majority of the queries are "junk" queries, the rate of change is
+      relatively slow, and there are no odd corner cases such as wildcards.
+      See Section 3 for more discussion. If the root zone is not DNSSEC signed
+      with NSEC records then the Cheese Shop is closed and this document does
+      not apply. Resolvers MUST continue to work in such an environment.</t>
 
       <t>If the (DNSSEC validated) answer to a query to a root server is an
       NXDOMAIN then the resolver SHOULD cache the NSEC record provided in the
@@ -141,7 +141,7 @@
 
     <section title="Generating negatives responses from NSEC">
       <t>[ This section is mainly for discussion, and is more informal. It
-      should be deleted before publication. ] </t>
+      should be deleted before publication. ]</t>
 
       <t>Section 4.5 of <xref target="RFC4035"/> says:</t>
 
@@ -160,7 +160,7 @@
       <t>So, if a resolver generates negative answers from an NSEC record, it
       will not send any queries for names within that NSEC range (for the
       TTL). If a new name is added to the zone during this interval the
-      resolver will not know this. </t>
+      resolver will not know this.</t>
 
       <t>For the limited use case of this document (the DNS root) we believe
       that this is an acceptable trade off - the (current) TTL of the
@@ -168,7 +168,7 @@
       means that, for a new TLD to begin resolving everywhere will require a
       minimum of a day - and this is true whether or not this is implemented
       (if someone had queried for the exact name, there would be a negatively
-      cached answer, this simply expands the range of negative caches). </t>
+      cached answer, this simply expands the range of negative caches).</t>
     </section>
 
     <section title="IANA Considerations">
@@ -179,20 +179,19 @@
     </section>
 
     <section anchor="security" title="Security Considerations">
-     <t>The impact of resolver caching is that the resolver will not re-query an
-        name server for a cached response until the TTL of the cached response
-        expires. This may lead to cases where the resolver responds with
-        outdated information for a period of time for subsequent queries for the
-        name name.</t>
-  
-       <t>This draft extends the scope of this vulnerability to include
-        queries for all names that fall within the NSEC-defined range.
-        </t>
+      <t>The impact of resolver caching is that the resolver will not re-query
+      an name server for a cached response until the TTL of the cached
+      response expires. This may lead to cases where the resolver responds
+      with outdated information for a period of time for subsequent queries
+      for the name name.</t>
+
+      <t>This draft extends the scope of this vulnerability to include queries
+      for all names that fall within the NSEC-defined range.</t>
     </section>
 
     <section title="Acknowledgements">
       <t>The authors wish to thank some folk, including Stephane Bortzmeyer,
-      Bob Harold, Paul Vixie. </t>
+      Bob Harold, Shane Kerr, Paul Vixie.</t>
     </section>
   </middle>
 
@@ -210,7 +209,16 @@
     <section title="Changes / Author Notes.">
       <t>[RFC Editor: Please remove this section before publication ]</t>
 
-      <t>From -00 to -01.</t>
+      <t>From -01 to -02:</t>
+
+      <t><list style="symbols">
+          <t>Incorporated Shane Kerr's "If the root zone is not DNSSEC signed
+          with NSEC records then the Cheese Shop is closed and this document
+          does not apply. Resolvers MUST continue to work in such an
+          environment.""</t>
+        </list></t>
+
+      <t>From -00 to -01:</t>
 
       <t><list style="symbols">
           <t>Fairly significant rewrite - no substantive changes, only
