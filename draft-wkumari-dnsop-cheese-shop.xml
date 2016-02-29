@@ -120,9 +120,11 @@
       make it a special case - we know it is DNSSEC signed, and uses NSEC, the
       majority of the queries are "junk" queries, the rate of change is
       relatively slow, and there are no odd corner cases such as wildcards.
-      See Section 3 for more discussion. If the root zone is not DNSSEC signed
-      with NSEC records then the Cheese Shop is closed and this document does
-      not apply. Resolvers MUST continue to work in such an environment.</t>
+      See Section 3 for more discussion. </t>
+
+      <t>If the root zone is no longer DNSSEC signed with NSEC records then
+      this document no longer applies. Resolvers MUST continue to work in such
+      an environment.</t>
 
       <t>If the (DNSSEC validated) answer to a query to a root server is an
       NXDOMAIN then the resolver SHOULD cache the NSEC record provided in the
@@ -192,7 +194,7 @@
 
     <section title="Acknowledgements">
       <t>The authors wish to thank some folk, including Stephane Bortzmeyer,
-      Bob Harold, Shane Kerr, Paul Vixie, Tatuya Jinmei.</t>
+      Bob Harold, Paul Hoffman, Shane Kerr, Paul Vixie, Tatuya Jinmei.</t>
     </section>
   </middle>
 
@@ -216,11 +218,14 @@
           <t>Incorporated Shane Kerr's "If the root zone is not DNSSEC signed
           with NSEC records then the Cheese Shop is closed and this document
           does not apply. Resolvers MUST continue to work in such an
-          environment."</t>
+          environment." </t>
 
-          <t>Incorporated some dits from Jinmei.</t>
+          <t>Incorporated some edits from Jinmei
+          (https://mailarchive.ietf.org/arch/msg/dnsop/zKig99_PGmSlyLGZLf0t5qlEA5c)
+          </t>
 
-          <t/>
+          <t>Comments from Paul Hoffman
+          (https://mailarchive.ietf.org/arch/msg/dnsop/96QTstOlotcofKZfhCMbYskZOJw)</t>
         </list></t>
 
       <t>From -00 to -01:</t>

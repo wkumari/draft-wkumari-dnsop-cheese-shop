@@ -83,7 +83,7 @@ Table of Contents
      7.1.  Normative References  . . . . . . . . . . . . . . . . . .   5
      7.2.  Informative References  . . . . . . . . . . . . . . . . .   5
    Appendix A.  Changes / Author Notes.  . . . . . . . . . . . . . .   5
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   5
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   6
 
 1.  Background
 
@@ -135,9 +135,10 @@ Internet-Draft          If I've told you once...           February 2016
    signed, and uses NSEC, the majority of the queries are "junk"
    queries, the rate of change is relatively slow, and there are no odd
    corner cases such as wildcards.  See Section 3 for more discussion.
-   If the root zone is not DNSSEC signed with NSEC records then the
-   Cheese Shop is closed and this document does not apply.  Resolvers
-   MUST continue to work in such an environment.
+
+   If the root zone is no longer DNSSEC signed with NSEC records then
+   this document no longer applies.  Resolvers MUST continue to work in
+   such an environment.
 
    If the (DNSSEC validated) answer to a query to a root server is an
    NXDOMAIN then the resolver SHOULD cache the NSEC record provided in
@@ -163,7 +164,6 @@ Internet-Draft          If I've told you once...           February 2016
    "In theory, a resolver could use wildcards or NSEC RRs to generate
    positive and negative responses (respectively) until the TTL or
    signatures on the records in question expire.  However, it seems
-   prudent for resolvers to avoid blocking new authoritative data or
 
 
 
@@ -172,6 +172,7 @@ Kumari & Huston          Expires August 27, 2016                [Page 3]
 Internet-Draft          If I've told you once...           February 2016
 
 
+   prudent for resolvers to avoid blocking new authoritative data or
    synthesizing new data on their own.  Resolvers that follow this
    recommendation will have a more consistent view of the namespace."
 
@@ -215,8 +216,7 @@ Internet-Draft          If I've told you once...           February 2016
 6.  Acknowledgements
 
    The authors wish to thank some folk, including Stephane Bortzmeyer,
-   Bob Harold, Shane Kerr, Paul Vixie, Tatuya Jinmei.
-
+   Bob Harold, Paul Hoffman, Shane Kerr, Paul Vixie, Tatuya Jinmei.
 
 
 
@@ -260,17 +260,17 @@ Appendix A.  Changes / Author Notes.
       does not apply.  Resolvers MUST continue to work in such an
       environment."
 
-   o  Incorporated some dits from Jinmei.
+   o  Incorporated some edits from Jinmei
+      (https://mailarchive.ietf.org/arch/msg/dnsop/
+      zKig99_PGmSlyLGZLf0t5qlEA5c)
 
-   o
+   o  Comments from Paul Hoffman (https://mailarchive.ietf.org/arch/msg/
+      dnsop/96QTstOlotcofKZfhCMbYskZOJw)
 
    From -00 to -01:
 
    o  Fairly significant rewrite - no substantive changes, only
       additional information, explaination and readability.
-
-Authors' Addresses
-
 
 
 
@@ -283,6 +283,8 @@ Kumari & Huston          Expires August 27, 2016                [Page 5]
 
 Internet-Draft          If I've told you once...           February 2016
 
+
+Authors' Addresses
 
    Warren Kumari
    Google
@@ -300,8 +302,6 @@ Internet-Draft          If I've told you once...           February 2016
    AUS
 
    Email: gih@apnic.net
-
-
 
 
 
